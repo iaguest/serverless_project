@@ -12,6 +12,22 @@ provider:
   stage: ${opt:stage, 'dev'}
   region: ${opt:region, 'eu-west-2'}
 
+  environment:
+    TODOS_TABLE: Todos-${self:provider.stage}
+    INDEX_NAME: userId-todoId-Index
+
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:Scan
+        - dynamodb:PutItem
+        - dynamodb:GetItem
+      Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+      Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}/index/${self:provider.environment.INDEX_NAME}
+
 functions:
 
   Auth:
@@ -24,9 +40,9 @@ functions:
       - http:
           method: get
           path: todos
+          cors: true
 
   # TODO: Configure this function
-  GetTodos:
   CreateTodo:
     handler: src/lambda/http/createTodo.handler
     events:
@@ -61,3 +77,42 @@ functions:
 resources:
   Resources:
     # TODO: Add any necessary AWS resources
+
+    TodosDynamoDBTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+        TableName: ${self:provider.environment.TODOS_TABLE}
+
+TodosTable:
+  Type: AWS::DynamoDB::Table
+  Properties:
+    AttributeDefinitions:
+      - AttributeName: userId
+        AttributeType: S
+      - AttributeName: dueDate
+        AttributeType: S
+      - AttributeName: todoId
+        AttributeType: S
+    KeySchema:
+      - AttributeName: userId
+        KeyType: HASH
+      - AttributeName: dueDate
+        KeyType: RANGE
+    BillingMode: PAY_PER_REQUEST
+    TableName: ${self:provider.environment.TODOS_TABLE}
+    LocalSecondaryIndexes:
+      - IndexName: ${self:provider.environment.INDEX_NAME}
+        KeySchema:
+          - AttributeName: userId
+            KeyType: HASH
+          - AttributeName: todoId
+            KeyType: RANGE
+        Projection:
+          ProjectionType: ALL # What attributes will be copied to an index
