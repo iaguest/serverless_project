@@ -4,9 +4,9 @@ import 'source-map-support/register'
 import { getAllTodos } from '../../businessLogic/todos';
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-  // TODO: Get all TODO items for a current user
-
   console.log('Processing event: ', event)
+
+  // TODO: Get all TODO items for a current user
 
   const items = await getAllTodos()
 
