@@ -7,6 +7,8 @@ import Axios from 'axios'
 import { Jwt } from '../../auth/Jwt'
 import { JwtPayload } from '../../auth/JwtPayload'
 
+var jwkToPem = require('jwk-to-pem');
+
 const logger = createLogger('auth')
 
 // TODO: Provide a URL that can be used to download a certificate that can be used
@@ -58,16 +60,16 @@ async function verifyToken(authHeader: string): Promise<JwtPayload> {
   const token = getToken(authHeader)
   const jwt: Jwt = decode(token, { complete: true }) as Jwt
 
-  const jwks: string = await Axios.get(jwksUrl)
-  const jwksJson = JSON.parse(jwks)
-  const cert = jwksJson.keys.find((element: { kid: string }) => element.kid === jwt.header.kid)
+  const response = await Axios(jwksUrl);
+
+  const jwk = response.data.keys.find((element: { kid: string }) => element.kid === jwt.header.kid)
 
   // TODO: Implement token verification
   // You should implement it similarly to how it was implemented for the exercise for the lesson 5
   // You can read more about how to do this here: https://auth0.com/blog/navigating-rs256-and-jwks/
   return verify(
     token,                      // Token from an HTTP header to validate
-    cert,                       // A certificate copied from Auth0 website
+    jwkToPem(jwk),              // Certificate built from JSON web key
     { algorithms: ['RS256'] }   // We need to specify that we use the RS256 algorithm
   ) as JwtPayload
 }
