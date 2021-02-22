@@ -8,7 +8,16 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
 
   // TODO: Get all TODO items for a current user
 
-  const items = await getAllTodos()
+  const authorization = event.headers.Authorization
+
+  console.log(`authorization ${authorization}`)
+
+  const split = authorization.split(' ')
+  const jwtToken = split[1]
+
+  console.log(`jwtToken ${jwtToken}`)
+
+  const items = await getAllTodos(jwtToken)
 
   return {
     statusCode: 200,
