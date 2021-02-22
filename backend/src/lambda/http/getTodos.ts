@@ -1,6 +1,7 @@
 import { APIGatewayProxyHandler, APIGatewayProxyEvent, APIGatewayProxyResult} from 'aws-lambda'
 import 'source-map-support/register'
 
+import { getUserId } from '../utils'
 import { getAllTodos } from '../../businessLogic/todos';
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
@@ -8,16 +9,9 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
 
   // TODO: Get all TODO items for a current user
 
-  const authorization = event.headers.Authorization
+  const userId: string = getUserId(event)
 
-  console.log(`authorization ${authorization}`)
-
-  const split = authorization.split(' ')
-  const jwtToken = split[1]
-
-  console.log(`jwtToken ${jwtToken}`)
-
-  const items = await getAllTodos(jwtToken)
+  const items = await getAllTodos(userId)
 
   return {
     statusCode: 200,
