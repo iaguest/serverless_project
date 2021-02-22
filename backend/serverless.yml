@@ -22,6 +22,7 @@ provider:
         - dynamodb:Query
         - dynamodb:PutItem
         - dynamodb:GetItem
+        - dynamodb:UpdateItem
       Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}
     - Effect: Allow
       Action:
@@ -61,6 +62,7 @@ functions:
           method: patch
           path: todos/{todoId}
           cors: true
+          authorizer: Auth
 
   # TODO: Configure this function
   DeleteTodo:

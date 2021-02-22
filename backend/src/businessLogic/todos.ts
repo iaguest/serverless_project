@@ -1,8 +1,10 @@
 import * as uuid from 'uuid'
 
 import { TodoItem } from '../models/TodoItem'
+import { TodoUpdate } from '../models/TodoUpdate'
 import { TodosAccess } from '../dataLayer/todosAccess'
 import { CreateTodoRequest } from '../requests/CreateTodoRequest'
+import { UpdateTodoRequest } from '../requests/UpdateTodoRequest'
 
 const todosAccess = new TodosAccess()
 
@@ -13,19 +15,32 @@ export async function getAllTodos(
 }
 
 export async function createTodo(
-    createTodoRequest: CreateTodoRequest,
-    userId: string
+  createTodoRequest: CreateTodoRequest,
+  userId: string
 ): Promise<TodoItem> {
-
-  const todoId = uuid.v4()
-
   return await todosAccess.createTodoItem({
     userId: userId,
-    todoId: todoId,
+    todoId: uuid.v4(),
     createdAt: new Date().toISOString(),
     name: createTodoRequest.name,
     dueDate: createTodoRequest.dueDate,
     done: false,
     attachmentUrl: undefined
   })
+}
+
+export async function updateTodo(
+  updateTodoRequest: UpdateTodoRequest,
+  userId: string,
+  todoId: string
+) {
+  const currentTodoItems: TodoItem[] = await todosAccess.getAllTodos(userId);
+  if (!currentTodoItems.find(element => element.todoId === todoId))
+    throw new Error("Trying to update non existent item.")
+
+  const toDoUpdate : TodoUpdate = {
+    ...updateTodoRequest,
+  }
+
+  await todosAccess.updateTodoItem(toDoUpdate, todoId)
 }
