@@ -36,11 +36,14 @@ export class TodosAccess {
     return todoItem
   }
 
-  async updateTodoItem(todoUpdate: TodoUpdate, todoId: string) {
+  async updateTodoItem(todoUpdate: TodoUpdate, userId: string, createdAt: string) {
 
     await this.docClient.update({
       TableName: this.todosTable,
-      Key: { 'todoId' : todoId },
+      Key: {
+        'userId' : userId,
+        'createdAt' : createdAt
+      },
       UpdateExpression: 'set #nme = :nme, dueDate = :dueDate, done = :done',
       ExpressionAttributeNames: {
         "#nme": "name"

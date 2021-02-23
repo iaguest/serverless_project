@@ -35,12 +35,13 @@ export async function updateTodo(
   todoId: string
 ) {
   const currentTodoItems: TodoItem[] = await todosAccess.getAllTodos(userId);
-  if (!currentTodoItems.find(element => element.todoId === todoId))
+  const currentTodoItem: TodoItem = currentTodoItems.find(element => element.todoId === todoId)
+  if (!currentTodoItem)
     throw new Error("Trying to update non existent item.")
 
   const toDoUpdate : TodoUpdate = {
     ...updateTodoRequest,
   }
 
-  await todosAccess.updateTodoItem(toDoUpdate, todoId)
+  await todosAccess.updateTodoItem(toDoUpdate, userId, currentTodoItem.createdAt)
 }
