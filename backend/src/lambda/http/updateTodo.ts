@@ -15,15 +15,27 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
   const updatedTodo: UpdateTodoRequest = JSON.parse(event.body)
 
   const userId: string = getUserId(event)
+  const headers = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Credentials': true
+  }
 
-  await updateTodo(updatedTodo, userId, todoId)
+  try {
+    await updateTodo(updatedTodo, userId, todoId)
+  }
+  catch (e) {
+    return {
+      statusCode: 400,
+      headers: headers,
+      body: JSON.stringify({
+        error: `Update failed: ${e.message}`
+      })
+    }
+  }
 
   return {
     statusCode: 200,
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Credentials': true
-    },
+    headers: headers,
     body: ''
   }
 }
