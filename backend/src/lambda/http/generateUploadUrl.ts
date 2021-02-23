@@ -3,7 +3,7 @@ import 'source-map-support/register'
 import { APIGatewayProxyEvent, APIGatewayProxyResult, APIGatewayProxyHandler } from 'aws-lambda'
 
 import { getUserId } from '../utils'
-import { getUploadUrl } from '../../s3/attachmentsAccess'
+import { getUploadUrl } from '../../dataLayer/attachmentsAccess'
 import { onGenerateUploadUrl } from '../../businessLogic/todos'
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
