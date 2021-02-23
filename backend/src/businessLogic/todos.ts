@@ -10,14 +10,14 @@ const todosAccess = new TodosAccess()
 
 export async function getAllTodos(
   userId: string
-): Promise<TodoItem[]> {
+) : Promise<TodoItem[]> {
   return todosAccess.getAllTodos(userId)
 }
 
 export async function createTodo(
   createTodoRequest: CreateTodoRequest,
   userId: string
-): Promise<TodoItem> {
+) : Promise<TodoItem> {
   return await todosAccess.createTodoItem({
     userId: userId,
     todoId: uuid.v4(),
@@ -39,6 +39,15 @@ export async function updateTodo(
   }
 
   const currentTodoItem: TodoItem = await todosAccess.getTodo(userId, todoId)
-  
+
   await todosAccess.updateTodoItem(toDoUpdate, userId, currentTodoItem.createdAt)
+}
+
+export async function deleteTodo(
+  userId: string,
+  todoId:string
+) {
+  const currentTodoItem: TodoItem = await todosAccess.getTodo(userId, todoId)
+
+  await todosAccess.deleteToDoItem(userId, currentTodoItem.createdAt)
 }
