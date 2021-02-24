@@ -3,7 +3,7 @@ import 'source-map-support/register'
 import { APIGatewayProxyEvent, APIGatewayProxyResult, APIGatewayProxyHandler } from 'aws-lambda'
 
 import { getUserId } from '../utils'
-import { getUploadUrl, getAttachmentUrl } from '../../dataLayer/fileAccess'
+import { getTodoItemUploadUrl, getTodoItemAttachmentUrl } from '../../dataLayer/fileAccess'
 import { setTodoItemAttachmentUrl } from '../../businessLogic/todos'
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
@@ -19,7 +19,7 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
 
   // TODO: Return a presigned URL to upload a file for a TODO item with the provided id
 
-  const attachmentUrl = getAttachmentUrl(todoId)
+  const attachmentUrl = getTodoItemAttachmentUrl(todoId)
 
   try {
     await setTodoItemAttachmentUrl(userId, todoId, attachmentUrl)
@@ -34,7 +34,7 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
     }
   }
 
-  const uploadUrl = getUploadUrl(todoId);
+  const uploadUrl = getTodoItemUploadUrl(todoId);
 
   return {
     statusCode: 201,

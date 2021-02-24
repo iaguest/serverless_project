@@ -7,7 +7,7 @@ const s3 = new AWS.S3({
 const bucketName = process.env.ATTACHMENTS_S3_BUCKET
 const urlExpiration = parseInt(process.env.SIGNED_URL_EXPIRATION)
 
-export function getUploadUrl(todoId: string) {
+export function getTodoItemUploadUrl(todoId: string) {
     return s3.getSignedUrl('putObject', {
         Bucket: bucketName,
         Key: todoId,
@@ -15,6 +15,13 @@ export function getUploadUrl(todoId: string) {
     })
 }
 
-export function getAttachmentUrl(todoId: string) {
+export function getTodoItemAttachmentUrl(todoId: string) {
     return `https://${bucketName}.s3.amazonaws.com/${todoId}`
+}
+
+export async function deleteTodoItemAttachment(todoId: string) {
+    await s3.deleteObject({
+        Bucket: bucketName,
+        Key: todoId,
+    }).promise()
 }

@@ -3,6 +3,7 @@ import * as uuid from 'uuid'
 import { TodoItem } from '../models/TodoItem'
 import { TodoUpdate } from '../models/TodoUpdate'
 import { DbAccess } from '../dataLayer/dbAccess'
+import { deleteTodoItemAttachment } from '../dataLayer/fileAccess'
 import { CreateTodoRequest } from '../requests/CreateTodoRequest'
 import { UpdateTodoRequest } from '../requests/UpdateTodoRequest'
 
@@ -58,6 +59,10 @@ export async function deleteTodo(
   todoId:string
 ) {
   const currentTodoItem: TodoItem = await dbAccess.getTodo(userId, todoId)
+
+  if (currentTodoItem.attachmentUrl !== undefined) {
+    await deleteTodoItemAttachment(todoId)
+  }
 
   await dbAccess.deleteToDoItem(userId, currentTodoItem.createdAt)
 }
