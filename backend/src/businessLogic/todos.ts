@@ -43,7 +43,7 @@ export async function updateTodo(
   await dbAccess.updateTodoItem(toDoUpdate, userId, currentTodoItem.createdAt)
 }
 
-export async function onGenerateUploadUrl(
+export async function setTodoItemAttachmentUrl(
   userId: string,
   todoId: string,
   url: string
