@@ -45,11 +45,12 @@ export async function updateTodo(
 
 export async function onGenerateUploadUrl(
   userId: string,
-  todoId: string
+  todoId: string,
+  url: string
 ) {
   const currentTodoItem: TodoItem = await dbAccess.getTodo(userId, todoId)
   
-  await dbAccess.setTodoItemAttachmentUrl(userId, currentTodoItem.createdAt, todoId)
+  await dbAccess.setTodoItemAttachmentUrl(userId, currentTodoItem.createdAt, url)
 }
 
 export async function deleteTodo(

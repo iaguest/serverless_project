@@ -75,7 +75,7 @@ export class DbAccess {
 
   }
 
-  async setTodoItemAttachmentUrl(userId: string, createdAt: string, todoId: string) {
+  async setTodoItemAttachmentUrl(userId: string, createdAt: string, url: string) {
 
     await this.docClient.update({
       TableName: this.todosTable,
@@ -85,7 +85,7 @@ export class DbAccess {
       },
       UpdateExpression: 'set attachmentUrl = :attachmentUrl',
       ExpressionAttributeValues: {
-        ':attachmentUrl' : todoId,
+        ':attachmentUrl' : url,
       }
     }).promise()
 

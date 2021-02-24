@@ -21,7 +21,7 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
   const url = getAttachmentUploadUrl(todoId);
 
   try {
-    await onGenerateUploadUrl(userId, todoId)
+    await onGenerateUploadUrl(userId, todoId, url)
   }
   catch (e) {
     return {
