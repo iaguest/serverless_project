@@ -2,23 +2,23 @@ import * as uuid from 'uuid'
 
 import { TodoItem } from '../models/TodoItem'
 import { TodoUpdate } from '../models/TodoUpdate'
-import { TodosAccess } from '../dataLayer/todosAccess'
+import { DbAccess } from '../dataLayer/dbAccess'
 import { CreateTodoRequest } from '../requests/CreateTodoRequest'
 import { UpdateTodoRequest } from '../requests/UpdateTodoRequest'
 
-const todosAccess = new TodosAccess()
+const dbAccess = new DbAccess()
 
 export async function getAllTodos(
   userId: string
 ) : Promise<TodoItem[]> {
-  return todosAccess.getAllTodos(userId)
+  return dbAccess.getAllTodos(userId)
 }
 
 export async function createTodo(
   createTodoRequest: CreateTodoRequest,
   userId: string
 ) : Promise<TodoItem> {
-  return await todosAccess.createTodoItem({
+  return await dbAccess.createTodoItem({
     userId: userId,
     todoId: uuid.v4(),
     createdAt: new Date().toISOString(),
@@ -38,25 +38,25 @@ export async function updateTodo(
     ...updateTodoRequest,
   }
 
-  const currentTodoItem: TodoItem = await todosAccess.getTodo(userId, todoId)
+  const currentTodoItem: TodoItem = await dbAccess.getTodo(userId, todoId)
 
-  await todosAccess.updateTodoItem(toDoUpdate, userId, currentTodoItem.createdAt)
+  await dbAccess.updateTodoItem(toDoUpdate, userId, currentTodoItem.createdAt)
 }
 
 export async function onGenerateUploadUrl(
   userId: string,
   todoId: string
 ) {
-  const currentTodoItem: TodoItem = await todosAccess.getTodo(userId, todoId)
+  const currentTodoItem: TodoItem = await dbAccess.getTodo(userId, todoId)
   
-  await todosAccess.setTodoItemAttachmentUrl(userId, currentTodoItem.createdAt, todoId)
+  await dbAccess.setTodoItemAttachmentUrl(userId, currentTodoItem.createdAt, todoId)
 }
 
 export async function deleteTodo(
   userId: string,
   todoId:string
 ) {
-  const currentTodoItem: TodoItem = await todosAccess.getTodo(userId, todoId)
+  const currentTodoItem: TodoItem = await dbAccess.getTodo(userId, todoId)
 
-  await todosAccess.deleteToDoItem(userId, currentTodoItem.createdAt)
+  await dbAccess.deleteToDoItem(userId, currentTodoItem.createdAt)
 }

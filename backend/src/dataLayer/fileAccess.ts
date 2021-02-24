@@ -7,7 +7,7 @@ const s3 = new AWS.S3({
 const bucketName = process.env.ATTACHMENTS_S3_BUCKET
 const urlExpiration = parseInt(process.env.SIGNED_URL_EXPIRATION)
 
-export function getUploadUrl(todoId: string) {
+export function getAttachmentUploadUrl(todoId: string) {
     return s3.getSignedUrl('putObject', {
         Bucket: bucketName,
         Key: todoId,
