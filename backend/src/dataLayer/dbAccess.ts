@@ -5,6 +5,10 @@ import { TodoItem } from '../models/TodoItem'
 import { TodoUpdate } from '../models/TodoUpdate'
 
 import { createLogger } from '../utils/logger'
+
+const AWSXRay = require('aws-xray-sdk')
+const XAWS = AWSXRay.captureAWS(AWS)
+
 const logger = createLogger('dbAccess')
 
 export class DbAccess {
@@ -107,5 +111,5 @@ export class DbAccess {
 }
 
 function createDynamoDBClient() {
-  return new AWS.DynamoDB.DocumentClient()
+  return new XAWS.DynamoDB.DocumentClient()
 }
