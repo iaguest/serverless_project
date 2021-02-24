@@ -9,9 +9,12 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
 
   // TODO: Get all TODO items for a current user
 
-  const userId: string = getUserId(event)
+  const allTodos = await getAllTodos(getUserId(event))
 
-  const items = await getAllTodos(userId)
+  const items = allTodos.map(function(elem){
+    const { userId, ...item } = elem
+    return item
+  })
 
   return {
     statusCode: 200,
