@@ -4,6 +4,9 @@ import { DocumentClient } from 'aws-sdk/clients/dynamodb'
 import { TodoItem } from '../models/TodoItem'
 import { TodoUpdate } from '../models/TodoUpdate'
 
+import { createLogger } from '../utils/logger'
+const logger = createLogger('dbAccess')
+
 export class DbAccess {
 
   constructor(
@@ -13,8 +16,7 @@ export class DbAccess {
   }
 
   async getAllTodos(userId: string): Promise<TodoItem[]> {
-    console.log('Getting all todos')
-
+    logger.info("In getAllTodos...")
     const result = await this.docClient.query({
       TableName: this.todosTable,
       KeyConditionExpression: 'userId = :userId',
@@ -29,8 +31,7 @@ export class DbAccess {
   }
 
   async getTodo(userId: string, todoId:string) : Promise<TodoItem> {
-    console.log('Getting todo')
-
+    logger.info("In getTodo...")
     const result = await this.docClient.query({
       TableName : this.todosTable,
       IndexName : this.todosTableIndex,
@@ -46,6 +47,7 @@ export class DbAccess {
   }
 
   async createTodoItem(todoItem: TodoItem): Promise<TodoItem> {
+    logger.info("In createTodoItem...")
     await this.docClient.put({
       TableName: this.todosTable,
       Item: todoItem
@@ -55,7 +57,7 @@ export class DbAccess {
   }
 
   async updateTodoItem(todoUpdate: TodoUpdate, userId: string, createdAt: string) {
-
+    logger.info("In updateTodoItem...")
     await this.docClient.update({
       TableName: this.todosTable,
       Key: {
@@ -76,7 +78,7 @@ export class DbAccess {
   }
 
   async setTodoItemAttachmentUrl(userId: string, createdAt: string, url: string) {
-
+    logger.info("In setTodoItemAttachmentUrl...")
     await this.docClient.update({
       TableName: this.todosTable,
       Key: {
@@ -92,6 +94,7 @@ export class DbAccess {
   }
 
   async deleteToDoItem(userId: string, createdAt: string) {
+    logger.info("In deleteToDoItem...")
     await this.docClient.delete({
       TableName: this.todosTable,
       Key: {
